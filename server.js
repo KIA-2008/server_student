@@ -1,6 +1,8 @@
 const express = require("express")
 const app = express();
 
+app.use(express.json())
+
 const PORT = 3000
 
 const students = [
@@ -68,31 +70,57 @@ const predmet = [
 
 
 
-app.get("/students" , (req , res)=>{
+
+
+app.get("/students", (req, res) => {
   res.send(students)
 })
 
-app.get("/students/:id" , (req , res)=>{
-    console.log(req.params.id);
-    let student = students.find((stud)=>{
-      return stud.id == req.params.id
-    })
-    res.send(student)
-    
+app.get("/students/:id", (req, res) => {
+  let student = students.find((stud) => {
+    return stud.id == req.params.id
+  })
+
+  if (!student) {
+    res.status(404).json({ error: "Студент не найден" })
+  }
+  res.json(student)
+
 })
 
-app.get("/predmet" , (req , res)=>{
+app.post('/student', (req , res)=>{
+  const {name , age} = req.body
+
+  const newStudent = {
+    id: students.length+1,
+    name: name,
+    age: age,
+  }
+  
+  students.push(newStudent)
+  // res.status(200).json("регистрация прошла успешно!", newStudent);
+  res.send(students)
+})
+
+
+
+
+
+
+
+
+app.get("/predmet", (req, res) => {
   res.send(predmet)
 })
 
 
 
 
-app.get("/autorization" , (req , res)=>{
+app.get("/autorization", (req, res) => {
   res.send("Страница авторизации")
 })
 
-app.get("/registration" , (req , res)=>{
+app.get("/registration", (req, res) => {
   res.send("Страница регистрации")
 })
 
